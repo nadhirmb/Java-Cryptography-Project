@@ -19,6 +19,9 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 
 import javax.swing.*;
+
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.*;
 import javax.swing.filechooser.*;
 
@@ -26,9 +29,7 @@ class Main extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
 	static JLabel l;
-	Main()
-	{
-	}
+	Main(){}
 
 	public static void main(String args[]) throws NoSuchAlgorithmException
 	{
@@ -37,6 +38,7 @@ class Main extends JFrame implements ActionListener {
         SecureRandom secureRandom = new SecureRandom();
         keyPairGenerator.initialize(2048,secureRandom);
         KeyPair pair = keyPairGenerator.generateKeyPair();
+        
         PublicKey publicKey = pair.getPublic();
         String publicKeyString = Base64.getEncoder().encodeToString(publicKey.getEncoded());
         System.out.println("public key = "+ publicKeyString);
@@ -44,20 +46,28 @@ class Main extends JFrame implements ActionListener {
         String privateKeyString = Base64.getEncoder().encodeToString(privateKey.getEncoded());
         System.out.println("private key = "+ privateKeyString);
         
+        
         // GUI Frames
-		JFrame f = new JFrame("file chooser");
+		JFrame f = new JFrame("Project");
 
 		// set the size of the frame
 		f.setSize(400, 400);
 		f.setVisible(true);
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+		f.setLocationRelativeTo(null);
+		
 		JFrame encryptFrame = new JFrame("Encryption Window");
 
+		// Encryption Buttons
 		JButton mainBtnOne = new JButton("Encrypt");
+		mainBtnOne.setPreferredSize(new Dimension(300, 40));
 		JButton getLinkBtn = new JButton("Get The Link !");
+		getLinkBtn.setPreferredSize(new Dimension(300, 40));
 		JButton encryptWithAES = new JButton("AES");
+		encryptWithAES.setPreferredSize(new Dimension(300, 40));
 		JButton encryptWithRSA = new JButton("RSA");
+		encryptWithRSA.setPreferredSize(new Dimension(300, 40));
+
 
 		
 		mainBtnOne.addActionListener(new ActionListener() {
@@ -67,14 +77,14 @@ class Main extends JFrame implements ActionListener {
 			encryptFrame.setSize(400, 400);
 			encryptFrame.setVisible(true);
 			encryptFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			encryptFrame.setLocationRelativeTo(null);
 			
 			JPanel panelSecond = new JPanel();
-
+			panelSecond.setLayout(new FlowLayout());
 			panelSecond.add(getLinkBtn);
+			panelSecond.add(l);
 			panelSecond.add(encryptWithAES);	
 			panelSecond.add(encryptWithRSA);
-			
-			panelSecond.add(l);
 			
 			encryptFrame.add(panelSecond);
 			
@@ -89,9 +99,7 @@ class Main extends JFrame implements ActionListener {
 				int r = j.showOpenDialog(null);
 
 				// if the user selects a file
-				if (r == JFileChooser.APPROVE_OPTION)
-
-				{
+				if (r == JFileChooser.APPROVE_OPTION){
 					// set the label to the path of the selected file
 					l.setText(j.getSelectedFile().getAbsolutePath());
 				}
@@ -106,13 +114,10 @@ class Main extends JFrame implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 		// open a new frame i.e window
 			var key = "jackrutorial.com";
-			  
-			  System.out.println("File input: " + "D:\\text.txt");
-
-			  //encryptedFile
+			//encryptedFile
 			 
 			try {
-				encryptedFile("AES", key,  l.getText() , "decryptedMessage");
+				encryptedFile("AES", key,  l.getText() , "C:\\Projects\\text.enc");
 			} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException
 					| IllegalBlockSizeException | BadPaddingException | IOException e2) {
 				// TODO Auto-generated catch block
@@ -127,7 +132,7 @@ class Main extends JFrame implements ActionListener {
 				// open a new frame i.e window
 					
 				try {
-					rsaEncryption(privateKey, "C:\\Projects\\text.enc", "C:\\Projects\\text-decrypt.txt");
+					rsaEncryption(publicKey, l.getText() , "C:\\Projects\\text.enc");
 				} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException
 						| IllegalBlockSizeException | BadPaddingException | IOException e1) {
 					// TODO Auto-generated catch block
@@ -136,12 +141,18 @@ class Main extends JFrame implements ActionListener {
 				}
 				});
 				
-		//Decrypt Frame
+		// Decryption Buttons
 		
 		JButton mainBtnTwo = new JButton("Decrypt");
+		mainBtnTwo.setPreferredSize(new Dimension(300, 40));
+		
 		JButton getLinkBtnTwo = new JButton("Get The Link !");
+		getLinkBtnTwo.setPreferredSize(new Dimension(300, 40));
 		JButton decryptWithAES = new JButton("AES");
+		decryptWithAES.setPreferredSize(new Dimension(300, 40));
 		JButton decryptWithRSA = new JButton("RSA");
+		decryptWithRSA.setPreferredSize(new Dimension(300, 40));
+
 
 		
 		JFrame DecryptFrame = new JFrame("Encryption Window");
@@ -153,14 +164,16 @@ class Main extends JFrame implements ActionListener {
 			DecryptFrame.setSize(400, 400);
 			DecryptFrame.setVisible(true);
 			DecryptFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			Main f1 = new Main();
+			DecryptFrame.setLocationRelativeTo(null);
+			
 			JPanel p = new JPanel();
 
 			p.add(getLinkBtnTwo);
+			p.add(l);
+
 			p.add(decryptWithAES);	
 			p.add(decryptWithRSA);
 			
-			p.add(l);
 			DecryptFrame.add(p);
 			
 			}
@@ -210,7 +223,7 @@ class Main extends JFrame implements ActionListener {
 			// open a new frame i.e window
 				
 				try {
-					rsaDecryption(publicKey, "C:\\Projects\\text.enc", "C:\\Projects\\text-decrypt.txt");
+					rsaDecryption(privateKey, "C:\\Projects\\text.enc", "C:\\Projects\\text-decrypt.txt");
 				} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException
 						| IllegalBlockSizeException | BadPaddingException | IOException e1) {
 					// TODO Auto-generated catch block
@@ -225,7 +238,8 @@ class Main extends JFrame implements ActionListener {
 		Main f2 = new Main();
 		mainBtnOne.addActionListener(f2);
 		mainBtnTwo.addActionListener(f2);
-		JPanel p1 = new JPanel();		
+		JPanel p1 = new JPanel();	
+		p1.setLayout(new FlowLayout());
 		p1.add(mainBtnOne);
 		p1.add(mainBtnTwo);
 
@@ -295,12 +309,12 @@ class Main extends JFrame implements ActionListener {
 			}			
 			
 		
-		public static void rsaEncryption(PrivateKey privateKey, String fileInputPath, String fileOutPath)
+		public static void rsaEncryption(PublicKey publicKey, String fileInputPath, String fileOutPath)
 				   throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IOException,
 				   IllegalBlockSizeException, BadPaddingException {
 			
 				  var cipher = Cipher.getInstance("RSA");
-				  cipher.init(Cipher.ENCRYPT_MODE, privateKey);
+				  cipher.init(Cipher.ENCRYPT_MODE, publicKey);
 
 				  var fileInput = new File(fileInputPath);
 				  var inputStream = new FileInputStream(fileInput);
@@ -320,11 +334,11 @@ class Main extends JFrame implements ActionListener {
 				  System.out.println("New File: " + fileOutPath);
 				 }
 
-			public static void rsaDecryption(PublicKey publicKey, String fileInputPath, String fileOutPath)
+			public static void rsaDecryption(PrivateKey privateKey, String fileInputPath, String fileOutPath)
 				   throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IOException,
 				   IllegalBlockSizeException, BadPaddingException {
 				  var cipher = Cipher.getInstance("RSA");
-				  cipher.init(Cipher.DECRYPT_MODE, publicKey);
+				  cipher.init(Cipher.DECRYPT_MODE, privateKey);
 
 				  var fileInput = new File(fileInputPath);
 				  var inputStream = new FileInputStream(fileInput);
